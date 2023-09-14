@@ -21,47 +21,47 @@ func createRandomEntry() (Entry, error) {
 }
 
 func TestCreateEntry(t *testing.T) {
-	transfer, err := createRandomEntry()
+	entry, err := createRandomEntry()
 
 	require.NoError(t, err)
-	require.NotEmpty(t, transfer)
+	require.NotEmpty(t, entry)
 
-	require.NotEmpty(t, transfer.AccountID)
-	require.NotEmpty(t, transfer.Amount)
+	require.NotEmpty(t, entry.AccountID)
+	require.NotEmpty(t, entry.Amount)
 
-	require.NotEmpty(t, transfer.ID)
-	require.NotEmpty(t, transfer.CreatedAt)
+	require.NotEmpty(t, entry.ID)
+	require.NotEmpty(t, entry.CreatedAt)
 }
 
 func TestGetEntry(t *testing.T) {
-	transfer, _ := createRandomEntry()
-	resEntry, err := testQueries.GetEntry(context.Background(), transfer.ID)
+	entry, _ := createRandomEntry()
+	resEntry, err := testQueries.GetEntry(context.Background(), entry.ID)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, resEntry)
 
-	require.Equal(t, transfer.ID, resEntry.ID)
-	require.Equal(t, transfer.AccountID, resEntry.AccountID)
+	require.Equal(t, entry.ID, resEntry.ID)
+	require.Equal(t, entry.AccountID, resEntry.AccountID)
 
-	require.WithinDuration(t, transfer.CreatedAt, resEntry.CreatedAt, time.Second)
+	require.WithinDuration(t, entry.CreatedAt, resEntry.CreatedAt, time.Second)
 }
 
 func TestListEntries(t *testing.T) {
-	transfer, _ := createRandomEntry()
+	entry, _ := createRandomEntry()
 
 	argFrom := ListEntriesParams{
-		AccountID: transfer.AccountID,
+		AccountID: entry.AccountID,
 		Limit:     1,
 		Offset:    0,
 	}
 
-	transfersFrom, err := testQueries.ListEntries(context.Background(), argFrom)
+	entrysFrom, err := testQueries.ListEntries(context.Background(), argFrom)
 
 	require.NoError(t, err)
-	require.Len(t, transfersFrom, 1)
+	require.Len(t, entrysFrom, 1)
 
-	for _, transfer := range transfersFrom {
-		require.NotEmpty(t, transfer)
+	for _, entry := range entrysFrom {
+		require.NotEmpty(t, entry)
 	}
 
 }
