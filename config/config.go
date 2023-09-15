@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 
+	"github.com/fauzanfebrian/simplebank/util"
 	"github.com/joho/godotenv"
 )
 
@@ -16,10 +16,7 @@ var (
 )
 
 func init() {
-	_, b, _, _ := runtime.Caller(0)
-	basepath := filepath.Dir(b)
-
-	if err := godotenv.Load(filepath.Join(basepath, "..", ".env")); err != nil {
+	if err := godotenv.Load(filepath.Join(util.GetProjectPath(), ".env")); err != nil {
 		fmt.Println("config error:", err)
 		return
 	}
