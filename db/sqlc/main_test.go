@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/fauzanfebrian/simplebank/config"
+	"github.com/fauzanfebrian/simplebank/util"
 	_ "github.com/lib/pq"
 )
 
@@ -15,7 +17,14 @@ var testDb *sql.DB
 
 func TestMain(m *testing.M) {
 	var err error
-	testDb, err = sql.Open(config.DB_DRIVER, config.DB_SOURCE)
+
+	envPath := filepath.Join(util.GetProjectPath(), ".env")
+
+	if err = config.LoadConfig(envPath); err != nil {
+		log.Fatal("Can't load env:", err)
+	}
+
+	testDb, err = sql.Open(config.DBDriver, config.DBSource)
 
 	if err != nil {
 		log.Fatal("Can't connect to db:", err)

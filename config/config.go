@@ -3,23 +3,23 @@ package config
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
-	"github.com/fauzanfebrian/simplebank/util"
 	"github.com/joho/godotenv"
 )
 
-const DB_DRIVER string = "postgres"
+const DBDriver string = "postgres"
 
 var (
-	DB_SOURCE string
+	DBSource string
 )
 
-func init() {
-	if err := godotenv.Load(filepath.Join(util.GetProjectPath(), ".env")); err != nil {
-		fmt.Println("config error:", err)
-		return
+// Before using config variables, you should run this function first to load it.
+func LoadConfig(envFullPath string) error {
+	if err := godotenv.Load(envFullPath); err != nil {
+		return fmt.Errorf("'%s' is not env file, please check again", envFullPath)
 	}
 
-	DB_SOURCE = os.Getenv("DB_SOURCE")
+	DBSource = os.Getenv("DB_SOURCE")
+
+	return nil
 }
