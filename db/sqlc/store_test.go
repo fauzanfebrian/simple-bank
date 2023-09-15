@@ -87,10 +87,10 @@ func TestTransferTx(t *testing.T) {
 		existed[k] = true
 	}
 
-	updatedFromAccount, err := testQueries.GetAccount(context.Background(), baseFromAccount.ID)
+	updatedFromAccount, err := store.GetAccount(context.Background(), baseFromAccount.ID)
 	require.NoError(t, err)
 
-	updatedToAccount, err := testQueries.GetAccount(context.Background(), baseToAccount.ID)
+	updatedToAccount, err := store.GetAccount(context.Background(), baseToAccount.ID)
 	require.NoError(t, err)
 
 	fmt.Println(">> after updated balance:", updatedFromAccount.Balance, updatedToAccount.Balance)
