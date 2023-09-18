@@ -11,5 +11,9 @@ sqlc:
 	sqlc generate
 test:
 	go test -v -cover ./...
+server:
+	rm -f ./bin/simplebank
+	go build -o bin/simplebank .
+	./bin/simplebank
 
-.PHONY: migrateup migratedown sqlc test
+.PHONY: migrateup migratedown sqlc test server
