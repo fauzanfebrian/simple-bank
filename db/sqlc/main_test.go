@@ -20,9 +20,7 @@ func TestMain(m *testing.M) {
 
 	envPath := filepath.Join(util.GetProjectPath(), ".env")
 
-	if err = config.LoadConfig(envPath); err != nil {
-		log.Fatal("Can't load env:", err)
-	}
+	config.LoadConfig(envPath)
 
 	testDb, err = sql.Open(config.DBDriver, config.DBSource)
 

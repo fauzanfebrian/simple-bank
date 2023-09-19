@@ -1,6 +1,8 @@
 ifneq (,$(wildcard ./.env))
     include .env
     export
+else
+	DB_SOURCE=postgresql://postgres:secret@localhost:5432/simple_bank?sslmode=disable
 endif
 
 migrateup:
@@ -10,6 +12,7 @@ migratedown:
 sqlc:
 	sqlc generate
 test:
+	go clean -testcache
 	go test -v -cover ./...
 server:
 	rm -f ./bin/simplebank
