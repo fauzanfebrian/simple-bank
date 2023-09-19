@@ -18,5 +18,7 @@ server:
 	rm -f ./bin/simplebank
 	go build -o bin/simplebank .
 	./bin/simplebank
+mockgen:
+	mockgen -package mockdb -destination db/mock/store.go github.com/fauzanfebrian/simplebank/db/sqlc Store
 
-.PHONY: migrateup migratedown sqlc test server
+.PHONY: migrateup migratedown sqlc test server mockgen
