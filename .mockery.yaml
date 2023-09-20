@@ -1,0 +1,9 @@
+packages:
+    github.com/fauzanfebrian/simplebank/db/sqlc:
+        interfaces:
+            Store:
+                config:
+                    filename: 'store.go'
+                    dir: 'db/mock'
+                    mockname: 'MockStore'
+                    outpkg: 'mockdb'
