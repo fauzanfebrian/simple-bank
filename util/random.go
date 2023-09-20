@@ -10,7 +10,6 @@ const (
 	alphabet = "abcdefghijklmnopqrstuvwxyz"
 )
 
-var currencies = [3]string{"EUR", "USD", "IDR"}
 var randomizer *rand.Rand
 
 func init() {
@@ -48,6 +47,6 @@ func RandomMoney() int64 {
 
 // RandomCurrency generates a random currency code
 func RandomCurrency() string {
-	n := len(currencies)
-	return currencies[randomizer.Intn(n)]
+	n := len(supportedCurrencies)
+	return supportedCurrencies[randomizer.Intn(n)]
 }
