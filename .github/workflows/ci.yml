@@ -33,14 +33,11 @@ jobs:
 
             - name: Set up env
               run: |
-                  touch .env
-                  echo "DB_SOURCE=postgresql://postgres:secret@localhost:5432/simple_bank?sslmode=disable" >> .env
+                  DB_SOURCE=postgresql://postgres:secret@localhost:5432/simple_bank?sslmode=disable
+                  SERVER_ADDRESS=localhost:8000
 
-            - name: Download migrate
-              run: |
-                  curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz
-                  sudo mv migrate /usr/bin/migrate
-                  which migrate
+            - name: Setup dependencies
+              run: make setupdeps
 
             - name: Run migrations
               run: make migrateup
