@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/fauzanfebrian/simplebank/config"
 	db "github.com/fauzanfebrian/simplebank/db/sqlc"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -13,6 +14,8 @@ type Server struct {
 }
 
 func NewServer(store db.Store) *Server {
+	gin.SetMode(config.GinMode)
+
 	server := &Server{store: store}
 	router := gin.Default()
 
