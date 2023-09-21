@@ -33,7 +33,10 @@ jobs:
 
             - name: Set up env
               run: |
-                  export DB_SOURCE=postgresql://postgres:secret@localhost:5432/simple_bank?sslmode=disable
+                  export DB_SOURCE='postgresql://postgres:secret@localhost:5432/simple_bank?sslmode=disable'
+                  export SERVER_ADDRESS='localhost:8080'
+                  echo $DB_SOURCE >> .env
+                  echo $SERVER_ADDRESS >> .env
 
             - name: Download migrate
               run: |
