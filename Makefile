@@ -3,10 +3,18 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
+
+# migratecreate:
+# 	migrate create -ext sql -dir db/migration -seq $(word 3, $(MAKECMDGOALS))
+
 migrateup:
 	migrate -path db/migration -database "$(DB_SOURCE)" -verbose up
 migratedown:
 	migrate -path db/migration -database "$(DB_SOURCE)" -verbose down
+migrateup1:
+	migrate -path db/migration -database "$(DB_SOURCE)" -verbose up 1
+migratedown1:
+	migrate -path db/migration -database "$(DB_SOURCE)" -verbose down 1
 sqlc:
 	sqlc generate && echo "sqlc generated successfully"
 test:
@@ -24,5 +32,5 @@ setupdeps:
 	(command -v mockery >/dev/null 2>&1 || go install github.com/vektra/mockery/v2@v2.33.3) && echo "mockery installed successfully"
 
 .SILENT:
-.PHONY: migrateup migratedown sqlc test server mock setupdeps
+.PHONY: migrateup migratedown sqlc test server mock setupdeps migratecreate migrateup1 migratedown1
 .DEFAULT_GOAL := server
