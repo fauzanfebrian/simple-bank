@@ -69,7 +69,8 @@ func TestGetAccountAPI(t *testing.T) {
 			name:      "InvalidID",
 			accountID: 0,
 			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
-				store.AssertNotCalled(t, "GetAccount")
+				store.EXPECT().
+					GetAccount(mock.Anything, mock.Anything).Unset()
 			},
 			checkResponse: func(t *testing.T, recorder httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
@@ -159,7 +160,8 @@ func TestListAccountApi(t *testing.T) {
 				PageSize: 5,
 			},
 			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
-				store.AssertNotCalled(t, "ListAccounts")
+				store.EXPECT().
+					ListAccounts(mock.Anything, mock.Anything).Unset()
 			},
 			checkResponse: func(t *testing.T, recorder httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
@@ -172,7 +174,8 @@ func TestListAccountApi(t *testing.T) {
 				PageSize: 1000,
 			},
 			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
-				store.AssertNotCalled(t, "ListAccounts")
+				store.EXPECT().
+					CreateAccount(mock.Anything, mock.Anything).Unset()
 			},
 			checkResponse: func(t *testing.T, recorder httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
@@ -257,7 +260,8 @@ func TestDeleteAccount(t *testing.T) {
 			name:      "InvalidID",
 			accountID: 0,
 			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
-				store.AssertNotCalled(t, "DeleteAccount")
+				store.EXPECT().
+					DeleteAccount(mock.Anything, mock.Anything).Unset()
 			},
 			checkResponse: func(t *testing.T, recorder httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
@@ -339,7 +343,8 @@ func TestCreateAccount(t *testing.T) {
 				Currency: account.Currency,
 			},
 			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
-				store.AssertNotCalled(t, "CreateAccount")
+				store.EXPECT().
+					CreateAccount(mock.Anything, mock.Anything).Unset()
 			},
 			checkResponse: func(t *testing.T, recorder httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
@@ -352,7 +357,8 @@ func TestCreateAccount(t *testing.T) {
 				Currency: "RDR",
 			},
 			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
-				store.AssertNotCalled(t, "CreateAccount")
+				store.EXPECT().
+					CreateAccount(mock.Anything, mock.Anything).Unset()
 			},
 			checkResponse: func(t *testing.T, recorder httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
