@@ -1,8 +1,6 @@
 ifneq (,$(wildcard ./.env))
     include .env
     export
-else
-	DB_SOURCE=postgresql://postgres:secret@localhost:5432/simple_bank?sslmode=disable
 endif
 
 migrateup:
