@@ -12,6 +12,7 @@ const DBDriver string = "postgres"
 var (
 	DBSource      string
 	ServerAddress string
+	GinMode       string
 )
 
 // Before using config variables, you should run this function first to load it.
@@ -37,11 +38,15 @@ func LoadConfig(filenames ...string) {
 			key:          "SERVER_ADDRESS",
 			defaultValue: ":8080",
 		},
+		{
+			variable: &GinMode,
+			key:      "GIN_MODE",
+		},
 	}
 
 	for _, v := range mapLoadEnv {
 		*v.variable = os.Getenv(v.key)
-		if *v.variable == "" {
+		if *v.variable == "" && v.defaultValue != "" {
 			*v.variable = v.defaultValue
 		}
 	}

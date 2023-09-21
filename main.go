@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/fauzanfebrian/simplebank/api"
@@ -20,6 +21,8 @@ func main() {
 
 	store := db.NewStore(conn)
 	server := api.NewServer(store)
+
+	fmt.Println("Starting server on: \"" + config.ServerAddress + "\"")
 
 	err = server.Start(config.ServerAddress)
 	if err != nil {

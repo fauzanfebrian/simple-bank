@@ -170,7 +170,7 @@ func TestListAccountApi(t *testing.T) {
 		{
 			name: "InvalidPageSize",
 			query: listAccountsRequest{
-				PageID:   0,
+				PageID:   1,
 				PageSize: 1000,
 			},
 			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
