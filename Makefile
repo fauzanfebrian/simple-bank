@@ -3,10 +3,10 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
-
-# migratecreate:
-# 	migrate create -ext sql -dir db/migration -seq $(word 3, $(MAKECMDGOALS))
-
+migratecreate:
+	migrate create -ext sql -dir db/migration -seq $(name)
+migrateforce:
+	migrate -path db/migration -database "$(DB_SOURCE)" -verbose force 1
 migrateup:
 	migrate -path db/migration -database "$(DB_SOURCE)" -verbose up
 migratedown:
@@ -15,11 +15,12 @@ migrateup1:
 	migrate -path db/migration -database "$(DB_SOURCE)" -verbose up 1
 migratedown1:
 	migrate -path db/migration -database "$(DB_SOURCE)" -verbose down 1
+
 sqlc:
 	sqlc generate && echo "sqlc generated successfully"
 test:
 	go clean -testcache
-	go test -v -cover ./...
+	GIN_MODE=test go test -v -cover ./...
 server:
 	rm -f ./bin/simplebank
 	go build -o bin/simplebank .
@@ -32,5 +33,5 @@ setupdeps:
 	(command -v mockery >/dev/null 2>&1 || go install github.com/vektra/mockery/v2@v2.33.3) && echo "mockery installed successfully"
 
 .SILENT:
-.PHONY: migrateup migratedown sqlc test server mock setupdeps migratecreate migrateup1 migratedown1
+.PHONY: migrateup migratedown sqlc test server mock setupdeps migratecreate migrateup1 migratedown1 migrateforce migratecreate
 .DEFAULT_GOAL := server

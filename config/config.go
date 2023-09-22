@@ -1,6 +1,7 @@
 package config
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
@@ -53,6 +54,12 @@ func LoadConfig(filenames ...string) {
 			os.Setenv(v.key, v.defaultValue)
 			*v.variable = v.defaultValue
 		}
+	}
+
+	if flag.Lookup("test.v") != nil {
+		Environment = "test"
+		GinMode = gin.TestMode
+		return
 	}
 
 	switch Environment {
