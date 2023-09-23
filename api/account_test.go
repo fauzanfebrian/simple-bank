@@ -22,13 +22,13 @@ func TestGetAccountAPI(t *testing.T) {
 	testCases := []struct {
 		name          string
 		accountID     int64
-		buildStubs    func(t *testing.T, store *mockdb.MockStore)
+		buildStubs    func(store *mockdb.MockStore)
 		checkResponse func(t *testing.T, recorder httptest.ResponseRecorder)
 	}{
 		{
 			name:      "OK",
 			accountID: account.ID,
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					GetAccount(mock.Anything, account.ID).
 					Times(1).
@@ -42,7 +42,7 @@ func TestGetAccountAPI(t *testing.T) {
 		{
 			name:      "NotFound",
 			accountID: account.ID,
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					GetAccount(mock.Anything, account.ID).
 					Times(1).
@@ -55,7 +55,7 @@ func TestGetAccountAPI(t *testing.T) {
 		{
 			name:      "InternalError",
 			accountID: account.ID,
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					GetAccount(mock.Anything, account.ID).
 					Times(1).
@@ -68,7 +68,7 @@ func TestGetAccountAPI(t *testing.T) {
 		{
 			name:      "InvalidID",
 			accountID: 0,
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					GetAccount(mock.Anything, mock.Anything).Unset()
 			},
@@ -82,7 +82,7 @@ func TestGetAccountAPI(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			store := mockdb.NewMockStore(t)
 
-			tc.buildStubs(t, store)
+			tc.buildStubs(store)
 
 			server := NewServer(store)
 			recorder := httptest.NewRecorder()
@@ -107,7 +107,7 @@ func TestListAccountApi(t *testing.T) {
 	testCases := []struct {
 		name          string
 		query         listAccountsRequest
-		buildStubs    func(t *testing.T, store *mockdb.MockStore)
+		buildStubs    func(store *mockdb.MockStore)
 		checkResponse func(t *testing.T, recorder httptest.ResponseRecorder)
 	}{
 		{
@@ -116,7 +116,7 @@ func TestListAccountApi(t *testing.T) {
 				PageID:   1,
 				PageSize: n,
 			},
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				arg := db.ListAccountsParams{
 					Limit:  n,
 					Offset: 0,
@@ -138,7 +138,7 @@ func TestListAccountApi(t *testing.T) {
 				PageID:   1,
 				PageSize: n,
 			},
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				arg := db.ListAccountsParams{
 					Limit:  n,
 					Offset: 0,
@@ -159,7 +159,7 @@ func TestListAccountApi(t *testing.T) {
 				PageID:   0,
 				PageSize: 5,
 			},
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					ListAccounts(mock.Anything, mock.Anything).Unset()
 			},
@@ -173,7 +173,7 @@ func TestListAccountApi(t *testing.T) {
 				PageID:   1,
 				PageSize: 1000,
 			},
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					CreateAccount(mock.Anything, mock.Anything).Unset()
 			},
@@ -187,7 +187,7 @@ func TestListAccountApi(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			store := mockdb.NewMockStore(t)
 
-			tc.buildStubs(t, store)
+			tc.buildStubs(store)
 
 			server := NewServer(store)
 			recorder := httptest.NewRecorder()
@@ -213,13 +213,13 @@ func TestDeleteAccount(t *testing.T) {
 	testCases := []struct {
 		name          string
 		accountID     int64
-		buildStubs    func(t *testing.T, store *mockdb.MockStore)
+		buildStubs    func(store *mockdb.MockStore)
 		checkResponse func(t *testing.T, recorder httptest.ResponseRecorder)
 	}{
 		{
 			name:      "OK",
 			accountID: account.ID,
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					DeleteAccount(mock.Anything, account.ID).
 					Times(1).
@@ -233,7 +233,7 @@ func TestDeleteAccount(t *testing.T) {
 		{
 			name:      "NotFound",
 			accountID: account.ID,
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					DeleteAccount(mock.Anything, account.ID).
 					Times(1).
@@ -246,7 +246,7 @@ func TestDeleteAccount(t *testing.T) {
 		{
 			name:      "InternalError",
 			accountID: account.ID,
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					DeleteAccount(mock.Anything, account.ID).
 					Times(1).
@@ -259,7 +259,7 @@ func TestDeleteAccount(t *testing.T) {
 		{
 			name:      "InvalidID",
 			accountID: 0,
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					DeleteAccount(mock.Anything, mock.Anything).Unset()
 			},
@@ -273,7 +273,7 @@ func TestDeleteAccount(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			store := mockdb.NewMockStore(t)
 
-			tc.buildStubs(t, store)
+			tc.buildStubs(store)
 
 			server := NewServer(store)
 			recorder := httptest.NewRecorder()
@@ -295,7 +295,7 @@ func TestCreateAccount(t *testing.T) {
 	testCases := []struct {
 		name          string
 		body          createAccountRequest
-		buildStubs    func(t *testing.T, store *mockdb.MockStore)
+		buildStubs    func(store *mockdb.MockStore)
 		checkResponse func(t *testing.T, recorder httptest.ResponseRecorder)
 	}{
 		{
@@ -304,7 +304,7 @@ func TestCreateAccount(t *testing.T) {
 				Owner:    account.Owner,
 				Currency: account.Currency,
 			},
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				arg := db.CreateAccountParams{
 					Owner:    account.Owner,
 					Balance:  0,
@@ -327,7 +327,7 @@ func TestCreateAccount(t *testing.T) {
 				Owner:    account.Owner,
 				Currency: account.Currency,
 			},
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					CreateAccount(mock.Anything, mock.Anything).
 					Times(1).
@@ -342,7 +342,7 @@ func TestCreateAccount(t *testing.T) {
 			body: createAccountRequest{
 				Currency: account.Currency,
 			},
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					CreateAccount(mock.Anything, mock.Anything).Unset()
 			},
@@ -356,7 +356,7 @@ func TestCreateAccount(t *testing.T) {
 				Owner:    account.Owner,
 				Currency: "RDR",
 			},
-			buildStubs: func(t *testing.T, store *mockdb.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					CreateAccount(mock.Anything, mock.Anything).Unset()
 			},
@@ -370,7 +370,7 @@ func TestCreateAccount(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			store := mockdb.NewMockStore(t)
 
-			tc.buildStubs(t, store)
+			tc.buildStubs(store)
 
 			server := NewServer(store)
 			recorder := httptest.NewRecorder()
