@@ -38,7 +38,7 @@ func TestJWTMaker(t *testing.T) {
 
 	payload, err = maker.VerifyToken(expiredToken)
 	require.ErrorIs(err, ErrTokenExpired)
-	require.Nil(payload)
+	require.NotEmpty(payload)
 
 	invalidToken := util.RandomString(32)
 	payload, err = maker.VerifyToken(invalidToken)
