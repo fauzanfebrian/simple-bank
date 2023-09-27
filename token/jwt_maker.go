@@ -2,19 +2,12 @@ package token
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
 const minSecretKeySize = 32
-
-var (
-	ErrInvalidSecretKeySize = fmt.Errorf("invalid key size: must be at least %d characters", minSecretKeySize)
-	ErrInvalidToken         = fmt.Errorf("invalid token")
-	ErrTokenExpired         = fmt.Errorf("token expired")
-)
 
 type JWTMaker struct {
 	secretKey string
@@ -46,13 +39,13 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 		return []byte(maker.secretKey), nil
 	}
 
-	var payload Payload
-	jwtToken, err := jwt.ParseWithClaims(token, &payload, keyFunc)
+	payload := &Payload{}
+	jwtToken, err := jwt.ParseWithClaims(token, payload, keyFunc)
 
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			// if token expired we still return payload in case the payload used
-			return &payload, ErrTokenExpired
+			return payload, ErrTokenExpired
 		}
 		return nil, ErrInvalidToken
 	}
@@ -61,5 +54,5 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 		return nil, ErrInvalidToken
 	}
 
-	return &payload, nil
+	return payload, nil
 }

@@ -5,14 +5,13 @@ import (
 	"time"
 
 	"github.com/fauzanfebrian/simplebank/util"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
 )
 
-func TestJWTMaker(t *testing.T) {
+func TestPasetoMaker(t *testing.T) {
 	require := require.New(t)
 
-	maker, err := NewJWTMaker(util.RandomString(34))
+	maker, err := NewPasetoMaker(util.RandomString(32))
 	require.NoError(err)
 
 	username := util.RandomOwner()
@@ -35,10 +34,10 @@ func TestJWTMaker(t *testing.T) {
 	require.WithinDuration(expiredAt, payload.ExpiresAt.Time, time.Second)
 }
 
-func TestJWTExpiredToken(t *testing.T) {
+func TestPasetoExpiredToken(t *testing.T) {
 	require := require.New(t)
 
-	maker, err := NewJWTMaker(util.RandomString(34))
+	maker, err := NewPasetoMaker(util.RandomString(32))
 	require.NoError(err)
 
 	username := util.RandomOwner()
@@ -51,33 +50,4 @@ func TestJWTExpiredToken(t *testing.T) {
 	payload, err := maker.VerifyToken(expiredToken)
 	require.ErrorIs(err, ErrTokenExpired)
 	require.NotEmpty(payload)
-}
-
-func TestJWTInvalidToken(t *testing.T) {
-	require := require.New(t)
-
-	maker, err := NewJWTMaker(util.RandomString(34))
-	require.NoError(err)
-
-	invalidToken := util.RandomString(32)
-	payload, err := maker.VerifyToken(invalidToken)
-	require.ErrorIs(err, ErrInvalidToken)
-	require.Nil(payload)
-}
-
-func TestInvalidJWTTokenAlgNone(t *testing.T) {
-	payload, err := NewPayload(util.RandomOwner(), time.Minute)
-	require.NoError(t, err)
-
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodNone, payload)
-	token, err := jwtToken.SignedString(jwt.UnsafeAllowNoneSignatureType)
-	require.NoError(t, err)
-
-	maker, err := NewJWTMaker(util.RandomString(32))
-	require.NoError(t, err)
-
-	payload, err = maker.VerifyToken(token)
-	require.Error(t, err)
-	require.EqualError(t, err, ErrInvalidToken.Error())
-	require.Nil(t, payload)
 }
