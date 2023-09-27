@@ -8,7 +8,7 @@ import (
 )
 
 type Payload struct {
-	ID       uuid.UUID `json:"id"`
+	ID       uuid.UUID `json:"jti,omitempty"`
 	Username string    `json:"username"`
 	*jwt.RegisteredClaims
 }

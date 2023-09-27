@@ -13,6 +13,7 @@ const minSecretKeySize = 32
 var (
 	ErrInvalidSecretKeySize = fmt.Errorf("invalid key size: must be at least %d characters", minSecretKeySize)
 	ErrInvalidToken         = fmt.Errorf("invalid token")
+	ErrTokenExpired         = fmt.Errorf("token expired")
 )
 
 type JWTMaker struct {
@@ -43,12 +44,13 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 		}
 		return []byte(maker.secretKey), nil
 	}
-	var payload *Payload
-	jwtToken, err := jwt.ParseWithClaims(token, payload, keyFunc)
+
+	var payload Payload
+	jwtToken, err := jwt.ParseWithClaims(token, &payload, keyFunc)
+
 	if err != nil {
-		fmt.Println(err)
 		if errors.Is(err, jwt.ErrTokenExpired) {
-			return nil, jwt.ErrTokenExpired
+			return nil, ErrTokenExpired
 		}
 		return nil, ErrInvalidToken
 	}
@@ -57,5 +59,5 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 		return nil, ErrInvalidToken
 	}
 
-	return payload, nil
+	return &payload, nil
 }
