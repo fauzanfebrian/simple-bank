@@ -4,16 +4,25 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"os"
 	"testing"
+	"time"
 
-	"github.com/fauzanfebrian/simplebank/config"
+	db "github.com/fauzanfebrian/simplebank/db/sqlc"
+	"github.com/fauzanfebrian/simplebank/util"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )
 
-func TestMain(m *testing.M) {
-	config.LoadConfig()
-	os.Exit(m.Run())
+func newTestServer(t *testing.T, store db.Store) *Server {
+	config := util.Config{
+		TokenSymmetricKey:   util.RandomString(32),
+		AccessTokenDuration: time.Minute,
+		GinMode:             gin.TestMode,
+	}
+
+	server, err := NewServer(config, store)
+	require.NoError(t, err)
+	return server
 }
 
 func requireBodyMatch[T any](t *testing.T, body *bytes.Buffer, actualData T) {

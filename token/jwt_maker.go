@@ -7,14 +7,12 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-const minSecretKeySize = 32
-
 type JWTMaker struct {
 	secretKey string
 }
 
 func NewJWTMaker(secretKey string) (Maker, error) {
-	if len(secretKey) < minSecretKeySize {
+	if len(secretKey) < KeySize {
 		return nil, ErrInvalidSecretKeySize
 	}
 	return &JWTMaker{secretKey: secretKey}, nil

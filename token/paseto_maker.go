@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"aidanwoods.dev/go-paseto"
-	"golang.org/x/crypto/chacha20poly1305"
 )
 
 type PasetoMaker struct {
@@ -13,7 +12,7 @@ type PasetoMaker struct {
 }
 
 func NewPasetoMaker(symmetricKey string) (Maker, error) {
-	if len(symmetricKey) != chacha20poly1305.KeySize {
+	if len(symmetricKey) != KeySize {
 		return nil, ErrInvalidSymmetricKeySize
 	}
 
@@ -58,7 +57,7 @@ func (maker *PasetoMaker) VerifyToken(token string) (*Payload, error) {
 	claimsJson := tokenPaseto.ClaimsJSON()
 	payload, err := pasetoClaimToPayload(claimsJson)
 	if err != nil {
-		return nil, err
+		return nil, ErrInvalidToken
 	}
 
 	if time.Now().After(payload.ExpiredAt) {
