@@ -25,15 +25,15 @@ func newTestServer(t *testing.T, store db.Store) *Server {
 	return server
 }
 
-func requireBodyMatch[T any](t *testing.T, body *bytes.Buffer, actualData T) {
-	type getResData struct {
-		Data T `json:"data"`
-	}
+type resData[T any] struct {
+	Data T `json:"data"`
+}
 
+func requireBodyMatch[T any](t *testing.T, body *bytes.Buffer, actualData T) {
 	bodyData, err := io.ReadAll(body)
 	require.NoError(t, err)
 
-	var resData getResData
+	var resData resData[T]
 	err = json.Unmarshal(bodyData, &resData)
 	require.NoError(t, err)
 	require.Equal(t, actualData, resData.Data)
