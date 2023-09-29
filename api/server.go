@@ -36,6 +36,8 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 		v.RegisterValidation("currency", validCurrency)
 	}
 
+	server.setupRouter()
+
 	return server, nil
 }
 
