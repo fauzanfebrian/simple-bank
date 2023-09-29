@@ -47,12 +47,13 @@ func (server *Server) setupRouter() {
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)
 
-	router.POST("/accounts", server.createAccount)
-	router.DELETE("/accounts/:id", server.deleteAccount)
-	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.listAccounts)
+	authRouter := router.Group("/").Use(authMiddleware(server.tokenMaker))
 
-	router.POST("/transfers", server.createTransfer)
+	authRouter.POST("/accounts", server.createAccount)
+	authRouter.GET("/accounts/:id", server.getAccount)
+	authRouter.GET("/accounts", server.listAccounts)
+
+	authRouter.POST("/transfers", server.createTransfer)
 
 	server.router = router
 }
@@ -67,4 +68,8 @@ func errorResponse(err error) gin.H {
 
 func jsonResponse(data any) gin.H {
 	return gin.H{"data": data}
+}
+
+func authPayload(ctx *gin.Context) *token.Payload {
+	return ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 }

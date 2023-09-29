@@ -86,11 +86,12 @@ func TestDeleteAccount(t *testing.T) {
 }
 
 func TestListAccounts(t *testing.T) {
-	createRandomAccount()
+	account, _ := createRandomAccount()
 
 	arg := ListAccountsParams{
 		Limit:  1,
 		Offset: 0,
+		Owner:  account.Owner,
 	}
 
 	accounts, err := testQueries.ListAccounts(context.Background(), arg)
