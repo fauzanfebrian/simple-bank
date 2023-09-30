@@ -1,9 +1,15 @@
 package util
 
+const (
+	USD = "USD"
+	EUR = "EUR"
+	CAD = "CAD"
+)
+
 var supportedCurrencies = []string{
-	"USD",
-	"EUR",
-	"CAD",
+	USD,
+	EUR,
+	CAD,
 }
 
 func IsSupportedCurrency(currency string) bool {
