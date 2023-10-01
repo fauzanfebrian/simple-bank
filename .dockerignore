@@ -1,0 +1,44 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Dependency directories (Remove these if you are using a dependency manager like Go Modules)
+vendor/
+
+# Compiled Go programs
+/main
+
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Log files
+log/
+
+# Temporary files
+tmp/
+
+# Environment variables file (if you use one)
+.env
+
+# IDE-specific files (e.g., Visual Studio Code, JetBrains IDEs)
+.vscode/
+.idea/
+
+# Binary executables for your application
+bin/
+
+# Compiled Go source code
+*.test
+
+# End-to-end test binaries
+tests/e2e/*.exe
+tests/e2e/*.dll
+tests/e2e/*.so
+tests/e2e/*.dylib

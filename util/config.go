@@ -1,6 +1,8 @@
 package util
 
 import (
+	"errors"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +35,7 @@ func LoadConfig(filePath string) (config Config, err error) {
 	viper.AutomaticEnv()
 
 	err = viper.ReadInConfig()
-	if err != nil {
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return
 	}
 
