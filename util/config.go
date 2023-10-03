@@ -1,6 +1,9 @@
 package util
 
 import (
+	"errors"
+	"os"
+	"reflect"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -26,6 +29,19 @@ type Config struct {
 	DBDriver             string
 }
 
+func bindEnvKeysToViper(config Config) {
+	r := reflect.TypeOf(config)
+	for r.Kind() == reflect.Ptr {
+		r = r.Elem()
+	}
+	for i := 0; i < r.NumField(); i++ {
+		env := r.Field(i).Tag.Get("mapstructure")
+		if env != "" {
+			viper.BindEnv(env)
+		}
+	}
+}
+
 // LoadConfig reads configuration from file or environment variables.
 func LoadConfig(filePath string) (config Config, err error) {
 	viper.SetConfigFile(filePath)
@@ -34,7 +50,10 @@ func LoadConfig(filePath string) (config Config, err error) {
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		return
+		if !errors.Is(err, os.ErrNotExist) {
+			return
+		}
+		bindEnvKeysToViper(config)
 	}
 
 	err = viper.Unmarshal(&config)
