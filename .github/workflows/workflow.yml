@@ -13,10 +13,13 @@ jobs:
             contents: read
             id-token: write
         steps:
+            - name: Checkout repo
+              uses: actions/checkout@v3
+
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v2
               with:
-                  role-to-assume: ${{secrets.AWS_ARN}}
+                  role-to-assume: arn:aws:iam::466972164695:role/GHAction
                   aws-region: ap-southeast-1
 
             - name: Login to Amazon ECR
@@ -31,12 +34,3 @@ jobs:
               run: |
                   docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
                   docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
-            - name: Checkout repo
-              uses: actions/checkout@v3
-
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
-                  aws-region: aws-region-1
