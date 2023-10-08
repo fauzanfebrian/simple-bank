@@ -162,6 +162,10 @@ func TestLoginUser(t *testing.T) {
 					GetUser(mock.Anything, user.Username).
 					Times(1).
 					Return(user, nil)
+				store.EXPECT().
+					CreateSession(mock.Anything, mock.Anything).
+					Times(1).
+					Return(db.Session{}, nil)
 			},
 			checkResponse: func(t *testing.T, recorder httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
