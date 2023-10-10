@@ -34,13 +34,13 @@ db_docs:
 db_schema:
 	dbml2sql --postgres -o doc/schema.sql doc/db.dbml
 
-setupdeps:
-	(command -v sqlc >/dev/null 2>&1 || go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.21.0) && echo "sqlc installed successfully"
-	(command -v migrate >/dev/null 2>&1 || go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest) && echo "migrate installed successfully"
-	(command -v mockery >/dev/null 2>&1 || go install github.com/vektra/mockery/v2@v2.33.3) && echo "mockery installed successfully"
-	(command -v dbdocs >/dev/null 2>&1 || npm install -g dbdocs) && echo "dbdocs installed successfully"
-	(command -v dbml2sql >/dev/null 2>&1 || npm install -g @dbml/cli) && echo "dbml installed successfully"
+proto:
+	rm *.go
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+    --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+    proto/*.proto
+
 
 .SILENT:
-.PHONY: migrateup migratedown sqlc test server mock setupdeps migratecreate migrateup1 migratedown1 migrateforce migratecreate db_docs db_schema
+.PHONY: migrateup migratedown sqlc test server mock migratecreate migrateup1 migratedown1 migrateforce migratecreate db_docs db_schema proto
 .DEFAULT_GOAL := server
