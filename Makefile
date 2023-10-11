@@ -43,7 +43,9 @@ proto:
     --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
     proto/*.proto
 
+evans:
+	evans --host localhost --port 9090 -r repl
 
 .SILENT:
-.PHONY: migrateup migratedown sqlc test server mock migratecreate migrateup1 migratedown1 migrateforce migratecreate db_docs db_schema proto
+.PHONY: migrateup migratedown sqlc test server mock migratecreate migrateup1 migratedown1 migrateforce migratecreate db_docs db_schema proto evans
 .DEFAULT_GOAL := server
