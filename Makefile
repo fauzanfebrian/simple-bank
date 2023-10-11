@@ -18,13 +18,16 @@ migratedown1:
 
 sqlc:
 	sqlc generate && echo "sqlc generated successfully"
+
 test:
 	go clean -testcache
 	GIN_MODE=test go test -v -cover ./...
+
 server:
 	rm -f ./bin/simplebank
 	go build -o bin/simplebank .
 	./bin/simplebank
+
 mock:
 	mockery -d
 
@@ -35,7 +38,7 @@ db_schema:
 	dbml2sql --postgres -o doc/schema.sql doc/db.dbml
 
 proto:
-	rm *.go
+	rm -f pb/*.go
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
     --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
     proto/*.proto
