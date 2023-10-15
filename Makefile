@@ -45,10 +45,22 @@ proto:
 		--grpc-gateway_out pb --grpc-gateway_opt paths=source_relative \
 		--openapiv2_out=doc/swagger --openapiv2_opt=allow_merge=true,merge_file_name=simplebank \
 		proto/*.proto
+	statik -src=./doc/swagger -dest=./doc
 
 evans:
 	evans --host localhost --port 9090 -r repl
 
+setup:
+	echo "setup packages..."
+	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest || true;
+	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway || true;
+	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 || true;
+	go install github.com/rakyll/statik || true;
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.21.0 || true;
+	go install github.com/vektra/mockery/v2@v2.33.3 || true;
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc || true;
+	go install google.golang.org/protobuf/cmd/protoc-gen-go || true;
+
 .SILENT:
-.PHONY: migrateup migratedown sqlc test server mock migratecreate migrateup1 migratedown1 migrateforce migratecreate db_docs db_schema proto evans
+.PHONY: migrateup migratedown sqlc test server mock migratecreate migrateup1 migratedown1 migrateforce migratecreate db_docs db_schema proto evans setup
 .DEFAULT_GOAL := server
