@@ -974,6 +974,59 @@ func (_c *MockStore_UpdateAccount_Call) RunAndReturn(run func(context.Context, d
 	return _c
 }
 
+// UpdateUser provides a mock function with given fields: ctx, arg
+func (_m *MockStore) UpdateUser(ctx context.Context, arg db.UpdateUserParams) (db.User, error) {
+	ret := _m.Called(ctx, arg)
+
+	var r0 db.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, db.UpdateUserParams) (db.User, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, db.UpdateUserParams) db.User); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		r0 = ret.Get(0).(db.User)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, db.UpdateUserParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockStore_UpdateUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateUser'
+type MockStore_UpdateUser_Call struct {
+	*mock.Call
+}
+
+// UpdateUser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - arg db.UpdateUserParams
+func (_e *MockStore_Expecter) UpdateUser(ctx interface{}, arg interface{}) *MockStore_UpdateUser_Call {
+	return &MockStore_UpdateUser_Call{Call: _e.mock.On("UpdateUser", ctx, arg)}
+}
+
+func (_c *MockStore_UpdateUser_Call) Run(run func(ctx context.Context, arg db.UpdateUserParams)) *MockStore_UpdateUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(db.UpdateUserParams))
+	})
+	return _c
+}
+
+func (_c *MockStore_UpdateUser_Call) Return(_a0 db.User, _a1 error) *MockStore_UpdateUser_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockStore_UpdateUser_Call) RunAndReturn(run func(context.Context, db.UpdateUserParams) (db.User, error)) *MockStore_UpdateUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockStore creates a new instance of MockStore. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockStore(t interface {
