@@ -17,7 +17,8 @@ UPDATE users
 SET
   hashed_password = COALESCE(sqlc.narg(hashed_password),hashed_password),
   full_name = COALESCE(sqlc.narg(full_name),full_name),
-  email = COALESCE(sqlc.narg(email),email)
+  email = COALESCE(sqlc.narg(email),email),
+  password_changed_at = CASE WHEN sqlc.narg(hashed_password) IS NOT NULL THEN NOW() ELSE password_changed_at END
 WHERE
   username = @username
 RETURNING *;
