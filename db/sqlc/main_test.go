@@ -2,13 +2,14 @@ package db
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"os"
 	"path"
 	"testing"
 
 	"github.com/fauzanfebrian/simplebank/util"
 	_ "github.com/lib/pq"
+	"github.com/rs/zerolog/log"
 )
 
 var testQueries *Queries
@@ -20,13 +21,13 @@ func TestMain(m *testing.M) {
 	envPath := path.Join(util.GetProjectPath(), ".env")
 	config, err := util.LoadConfig(envPath)
 	if err != nil {
-		log.Fatal("cannot load config:", err)
+		log.Fatal().Err(fmt.Errorf("cannot load config: %s", err))
 	}
 
 	testDb, err = sql.Open(config.DBDriver, config.DBSource)
 
 	if err != nil {
-		log.Fatal("Can't connect to db:", err)
+		log.Fatal().Err(fmt.Errorf("Can't connect to db: %s", err))
 	}
 
 	testQueries = New(testDb)

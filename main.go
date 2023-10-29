@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"net"
 	"net/http"
+	"os"
 
 	"github.com/fauzanfebrian/simplebank/api"
 	db "github.com/fauzanfebrian/simplebank/db/sqlc"
@@ -17,6 +17,8 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	_ "github.com/lib/pq"
 	"github.com/rakyll/statik/fs"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -25,12 +27,16 @@ import (
 func main() {
 	config, err := util.LoadConfig(".env")
 	if err != nil {
-		log.Fatal("cannot load config:", err)
+		log.Fatal().Err(fmt.Errorf("cannot load config: %s", err))
+	}
+
+	if config.Environment == "development" {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
 
 	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
-		log.Fatal("Cannot connect db:", err)
+		log.Fatal().Err(fmt.Errorf("cannot connect db: %s", err))
 	}
 
 	store := db.NewStore(conn)
@@ -43,29 +49,30 @@ func main() {
 func RunGrpcServer(config util.Config, store db.Store) {
 	server, err := gapi.NewServer(config, store)
 	if err != nil {
-		log.Fatal("Cannot create server:", err)
+		log.Fatal().Err(fmt.Errorf("cannot create server: %s", err))
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcLogger := grpc.UnaryInterceptor(gapi.GrpcLogger)
+	grpcServer := grpc.NewServer(grpcLogger)
 	pb.RegisterSimplebankServer(grpcServer, server)
 	reflection.Register(grpcServer)
 
 	listener, err := net.Listen("tcp", config.GRPCServerAddress)
 	if err != nil {
-		log.Fatal("Cannot create listener:", err)
+		log.Fatal().Err(fmt.Errorf("cannot create listener: %s", err))
 	}
 
-	log.Printf("start gRPC server at %s", listener.Addr().String())
+	log.Info().Msgf("start gRPC server at %s", listener.Addr().String())
 	err = grpcServer.Serve(listener)
 	if err != nil {
-		log.Fatal("Cannot start gRPC server:", err)
+		log.Fatal().Err(fmt.Errorf("cannot start gRPC server: %s", err))
 	}
 }
 
 func RunGatewayServer(config util.Config, store db.Store) {
 	server, err := gapi.NewServer(config, store)
 	if err != nil {
-		log.Fatal("Cannot create server:", err)
+		log.Fatal().Err(fmt.Errorf("cannot create server: %s", err))
 	}
 
 	jsonOption := runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
@@ -83,7 +90,7 @@ func RunGatewayServer(config util.Config, store db.Store) {
 
 	err = pb.RegisterSimplebankHandlerServer(ctx, grpcMux, server)
 	if err != nil {
-		log.Fatal("cannot register handler server")
+		log.Fatal().Err(fmt.Errorf("cannot register handler server"))
 	}
 
 	mux := http.NewServeMux()
@@ -91,7 +98,7 @@ func RunGatewayServer(config util.Config, store db.Store) {
 
 	statikFs, err := fs.New()
 	if err != nil {
-		log.Fatal("cannot create statik:", err)
+		log.Fatal().Err(fmt.Errorf("cannot create statik: %s", err))
 	}
 
 	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFs))
@@ -99,26 +106,27 @@ func RunGatewayServer(config util.Config, store db.Store) {
 
 	listener, err := net.Listen("tcp", config.HTTPServerAddress)
 	if err != nil {
-		log.Fatal("Cannot create listener:", err)
+		log.Fatal().Err(fmt.Errorf("cannot create listener: %s", err))
 	}
 
-	log.Printf("start HTTP gateway server at %s", listener.Addr().String())
-	err = http.Serve(listener, mux)
+	log.Info().Msgf("start HTTP gateway server at %s", listener.Addr().String())
+	handler := gapi.HttpLogger(mux)
+	err = http.Serve(listener, handler)
 	if err != nil {
-		log.Fatal("Cannot start HTTP server:", err)
+		log.Fatal().Err(fmt.Errorf("cannot start HTTP server: %s", err))
 	}
 }
 
 func RunGinServer(config util.Config, store db.Store) {
 	server, err := api.NewServer(config, store)
 	if err != nil {
-		log.Fatal("Cannot create server:", err)
+		log.Fatal().Err(fmt.Errorf("cannot create server: %s", err))
 	}
 
 	fmt.Println("Starting server on: \"" + config.HTTPServerAddress + "\"")
 
 	err = server.Start(config.HTTPServerAddress)
 	if err != nil {
-		log.Fatal("cannot start server:", err)
+		log.Fatal().Err(fmt.Errorf("cannot start server: %s", err))
 	}
 }
