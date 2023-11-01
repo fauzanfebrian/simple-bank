@@ -14,7 +14,9 @@ import (
 	"github.com/fauzanfebrian/simplebank/gapi"
 	"github.com/fauzanfebrian/simplebank/pb"
 	"github.com/fauzanfebrian/simplebank/util"
+	"github.com/fauzanfebrian/simplebank/worker"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/hibiken/asynq"
 	_ "github.com/lib/pq"
 	"github.com/rakyll/statik/fs"
 	"github.com/rs/zerolog"
@@ -41,13 +43,20 @@ func main() {
 
 	store := db.NewStore(conn)
 
-	go RunGatewayServer(config, store)
-	RunGrpcServer(config, store)
+	redisOpt := asynq.RedisClientOpt{
+		Addr: config.RedisAddress,
+	}
+
+	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
+
+	go RunGatewayServer(config, store, taskDistributor)
+	go RunTaskProcessor(redisOpt, store)
+	RunGrpcServer(config, store, taskDistributor)
 	// RunGinServer(config, store)
 }
 
-func RunGrpcServer(config util.Config, store db.Store) {
-	server, err := gapi.NewServer(config, store)
+func RunGrpcServer(config util.Config, store db.Store, taskDistributor worker.TaskDistributor) {
+	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Err(fmt.Errorf("cannot create server: %s", err))
 	}
@@ -69,8 +78,8 @@ func RunGrpcServer(config util.Config, store db.Store) {
 	}
 }
 
-func RunGatewayServer(config util.Config, store db.Store) {
-	server, err := gapi.NewServer(config, store)
+func RunGatewayServer(config util.Config, store db.Store, taskDistributor worker.TaskDistributor) {
+	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Err(fmt.Errorf("cannot create server: %s", err))
 	}
@@ -114,6 +123,15 @@ func RunGatewayServer(config util.Config, store db.Store) {
 	err = http.Serve(listener, handler)
 	if err != nil {
 		log.Fatal().Err(fmt.Errorf("cannot start HTTP server: %s", err))
+	}
+}
+
+func RunTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store) {
+	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store)
+	log.Info().Msg("start task processor")
+	err := taskProcessor.Start()
+	if err != nil {
+		log.Fatal().Err(fmt.Errorf("cannot start task processor: %s", err))
 	}
 }
 

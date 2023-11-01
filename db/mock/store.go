@@ -342,6 +342,59 @@ func (_c *MockStore_CreateUser_Call) RunAndReturn(run func(context.Context, db.C
 	return _c
 }
 
+// CreateUserTx provides a mock function with given fields: ctx, arg
+func (_m *MockStore) CreateUserTx(ctx context.Context, arg db.CreateUserTXParams) (db.CreateUserTxResult, error) {
+	ret := _m.Called(ctx, arg)
+
+	var r0 db.CreateUserTxResult
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, db.CreateUserTXParams) (db.CreateUserTxResult, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, db.CreateUserTXParams) db.CreateUserTxResult); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		r0 = ret.Get(0).(db.CreateUserTxResult)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, db.CreateUserTXParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockStore_CreateUserTx_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateUserTx'
+type MockStore_CreateUserTx_Call struct {
+	*mock.Call
+}
+
+// CreateUserTx is a helper method to define mock.On call
+//   - ctx context.Context
+//   - arg db.CreateUserTXParams
+func (_e *MockStore_Expecter) CreateUserTx(ctx interface{}, arg interface{}) *MockStore_CreateUserTx_Call {
+	return &MockStore_CreateUserTx_Call{Call: _e.mock.On("CreateUserTx", ctx, arg)}
+}
+
+func (_c *MockStore_CreateUserTx_Call) Run(run func(ctx context.Context, arg db.CreateUserTXParams)) *MockStore_CreateUserTx_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(db.CreateUserTXParams))
+	})
+	return _c
+}
+
+func (_c *MockStore_CreateUserTx_Call) Return(_a0 db.CreateUserTxResult, _a1 error) *MockStore_CreateUserTx_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockStore_CreateUserTx_Call) RunAndReturn(run func(context.Context, db.CreateUserTXParams) (db.CreateUserTxResult, error)) *MockStore_CreateUserTx_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteAccount provides a mock function with given fields: ctx, id
 func (_m *MockStore) DeleteAccount(ctx context.Context, id int64) error {
 	ret := _m.Called(ctx, id)
