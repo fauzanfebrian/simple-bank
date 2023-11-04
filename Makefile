@@ -21,7 +21,7 @@ sqlc:
 
 test:
 	go clean -testcache
-	GIN_MODE=test go test -v -cover ./...
+	GIN_MODE=test go test -v -cover -short ./...
 
 server:
 	rm -f ./bin/simplebank
