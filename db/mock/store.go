@@ -395,6 +395,59 @@ func (_c *MockStore_CreateUserTx_Call) RunAndReturn(run func(context.Context, db
 	return _c
 }
 
+// CreateVerifyEmail provides a mock function with given fields: ctx, arg
+func (_m *MockStore) CreateVerifyEmail(ctx context.Context, arg db.CreateVerifyEmailParams) (db.VerifyEmail, error) {
+	ret := _m.Called(ctx, arg)
+
+	var r0 db.VerifyEmail
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, db.CreateVerifyEmailParams) (db.VerifyEmail, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, db.CreateVerifyEmailParams) db.VerifyEmail); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		r0 = ret.Get(0).(db.VerifyEmail)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, db.CreateVerifyEmailParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockStore_CreateVerifyEmail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateVerifyEmail'
+type MockStore_CreateVerifyEmail_Call struct {
+	*mock.Call
+}
+
+// CreateVerifyEmail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - arg db.CreateVerifyEmailParams
+func (_e *MockStore_Expecter) CreateVerifyEmail(ctx interface{}, arg interface{}) *MockStore_CreateVerifyEmail_Call {
+	return &MockStore_CreateVerifyEmail_Call{Call: _e.mock.On("CreateVerifyEmail", ctx, arg)}
+}
+
+func (_c *MockStore_CreateVerifyEmail_Call) Run(run func(ctx context.Context, arg db.CreateVerifyEmailParams)) *MockStore_CreateVerifyEmail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(db.CreateVerifyEmailParams))
+	})
+	return _c
+}
+
+func (_c *MockStore_CreateVerifyEmail_Call) Return(_a0 db.VerifyEmail, _a1 error) *MockStore_CreateVerifyEmail_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockStore_CreateVerifyEmail_Call) RunAndReturn(run func(context.Context, db.CreateVerifyEmailParams) (db.VerifyEmail, error)) *MockStore_CreateVerifyEmail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteAccount provides a mock function with given fields: ctx, id
 func (_m *MockStore) DeleteAccount(ctx context.Context, id int64) error {
 	ret := _m.Called(ctx, id)

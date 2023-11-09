@@ -8,7 +8,18 @@ import (
 	"github.com/jordan-wright/email"
 )
 
-type EmailSender struct {
+type EmailSender interface {
+	SendEmail(
+		subject string,
+		content string,
+		to []string,
+		cc []string,
+		bcc []string,
+		attachFiles []string,
+	) error
+}
+
+type SmtpEmailSender struct {
 	name             string
 	fromEmailAddress string
 	password         string
@@ -17,8 +28,8 @@ type EmailSender struct {
 	port             string
 }
 
-func NewEmailSender(config util.Config) *EmailSender {
-	return &EmailSender{
+func NewSmtpEmailSender(config util.Config) EmailSender {
+	return &SmtpEmailSender{
 		name:             config.EmailSenderName,
 		fromEmailAddress: config.EmailSenderAddress,
 		password:         config.EmailSenderPassword,
@@ -28,7 +39,7 @@ func NewEmailSender(config util.Config) *EmailSender {
 	}
 }
 
-func (sender *EmailSender) SendEmail(
+func (sender *SmtpEmailSender) SendEmail(
 	subject string,
 	content string,
 	to []string,

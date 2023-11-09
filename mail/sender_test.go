@@ -17,7 +17,7 @@ func TestSendEmailWithGmail(t *testing.T) {
 	config, err := util.LoadConfig(envPath)
 	require.NoError(t, err)
 
-	sender := NewEmailSender(config)
+	sender := NewSmtpEmailSender(config)
 
 	subject := "A test email"
 	content := `
