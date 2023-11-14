@@ -18,7 +18,8 @@ SET
   hashed_password = COALESCE(sqlc.narg(hashed_password),hashed_password),
   full_name = COALESCE(sqlc.narg(full_name),full_name),
   email = COALESCE(sqlc.narg(email),email),
-  password_changed_at = CASE WHEN sqlc.narg(hashed_password) IS NOT NULL THEN NOW() ELSE password_changed_at END
+  password_changed_at = CASE WHEN sqlc.narg(hashed_password) IS NOT NULL THEN NOW() ELSE password_changed_at END,
+  is_email_verified = COALESCE(sqlc.narg(is_email_verified),is_email_verified)
 WHERE
   username = @username
 RETURNING *;
