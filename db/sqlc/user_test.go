@@ -2,12 +2,12 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"testing"
 	"time"
 
 	"github.com/fauzanfebrian/simplebank/util"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/stretchr/testify/require"
 )
 
@@ -27,7 +27,7 @@ func createRandomUser() (User, error) {
 		HashedPassword: password,
 	}
 
-	return testQueries.CreateUser(context.Background(), arg)
+	return testStore.CreateUser(context.Background(), arg)
 }
 
 func TestCreateUser(t *testing.T) {
@@ -47,7 +47,7 @@ func TestCreateUser(t *testing.T) {
 
 func TestGetUser(t *testing.T) {
 	account, _ := createRandomUser()
-	resUser, err := testQueries.GetUser(context.Background(), account.Username)
+	resUser, err := testStore.GetUser(context.Background(), account.Username)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, resUser)
@@ -63,8 +63,8 @@ func TestUpdateOnlyFullName(t *testing.T) {
 	oldUser, _ := createRandomUser()
 
 	newFullName := util.RandomOwner()
-	newUser, err := testQueries.UpdateUser(context.Background(), UpdateUserParams{
-		FullName: sql.NullString{
+	newUser, err := testStore.UpdateUser(context.Background(), UpdateUserParams{
+		FullName: pgtype.Text{
 			String: newFullName,
 			Valid:  true,
 		},
@@ -82,8 +82,8 @@ func TestUpdateOnlyEmail(t *testing.T) {
 	oldUser, _ := createRandomUser()
 
 	newEmail := util.RandomEmail()
-	newUser, err := testQueries.UpdateUser(context.Background(), UpdateUserParams{
-		Email: sql.NullString{
+	newUser, err := testStore.UpdateUser(context.Background(), UpdateUserParams{
+		Email: pgtype.Text{
 			String: newEmail,
 			Valid:  true,
 		},
@@ -103,8 +103,8 @@ func TestUpdateOnlyHashedPassword(t *testing.T) {
 	newHashedPassword, err := util.HashPassword(util.RandomString(6))
 	require.NoError(t, err)
 
-	newUser, err := testQueries.UpdateUser(context.Background(), UpdateUserParams{
-		HashedPassword: sql.NullString{
+	newUser, err := testStore.UpdateUser(context.Background(), UpdateUserParams{
+		HashedPassword: pgtype.Text{
 			String: newHashedPassword,
 			Valid:  true,
 		},
@@ -128,16 +128,16 @@ func TestUpdateOnly(t *testing.T) {
 
 	require.NoError(t, err)
 
-	newUser, err := testQueries.UpdateUser(context.Background(), UpdateUserParams{
-		HashedPassword: sql.NullString{
+	newUser, err := testStore.UpdateUser(context.Background(), UpdateUserParams{
+		HashedPassword: pgtype.Text{
 			String: newHashedPassword,
 			Valid:  true,
 		},
-		FullName: sql.NullString{
+		FullName: pgtype.Text{
 			String: newFullName,
 			Valid:  true,
 		},
-		Email: sql.NullString{
+		Email: pgtype.Text{
 			String: newEmail,
 			Valid:  true,
 		},

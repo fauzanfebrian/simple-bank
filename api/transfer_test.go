@@ -117,7 +117,7 @@ func TestTransferAPI(t *testing.T) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user1.Username, time.Minute)
 			},
 			buildStubs: func(store *mockdb.MockStore) {
-				store.EXPECT().GetAccount(mock.Anything, account1.ID).Times(1).Return(db.Account{}, sql.ErrNoRows)
+				store.EXPECT().GetAccount(mock.Anything, account1.ID).Times(1).Return(db.Account{}, db.ErrRecordNotFound)
 				store.EXPECT().GetAccount(mock.Anything, account2.ID).Unset()
 				store.EXPECT().TransferTx(mock.Anything, mock.Anything).Unset()
 			},
@@ -138,7 +138,7 @@ func TestTransferAPI(t *testing.T) {
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccount(mock.Anything, account1.ID).Times(1).Return(account1, nil)
-				store.EXPECT().GetAccount(mock.Anything, account2.ID).Times(1).Return(db.Account{}, sql.ErrNoRows)
+				store.EXPECT().GetAccount(mock.Anything, account2.ID).Times(1).Return(db.Account{}, db.ErrRecordNotFound)
 				store.EXPECT().TransferTx(mock.Anything, mock.Anything).Unset()
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {

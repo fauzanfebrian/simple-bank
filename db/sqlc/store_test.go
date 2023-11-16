@@ -9,8 +9,6 @@ import (
 )
 
 func TestTransferTx(t *testing.T) {
-	store := NewStore(testDb)
-
 	baseFromAccount, _ := createRandomAccount()
 	baseToAccount, _ := createRandomAccount()
 
@@ -22,7 +20,7 @@ func TestTransferTx(t *testing.T) {
 
 	for i := 0; i < n; i++ {
 		go func() {
-			result, err := store.TransferTx(context.Background(), TransferTXParams{
+			result, err := testStore.TransferTx(context.Background(), TransferTXParams{
 				FromAccountID: baseFromAccount.ID,
 				ToAccountID:   baseToAccount.ID,
 				Amount:        amount,
@@ -84,10 +82,10 @@ func TestTransferTx(t *testing.T) {
 		existed[k] = true
 	}
 
-	updatedFromAccount, err := store.GetAccount(context.Background(), baseFromAccount.ID)
+	updatedFromAccount, err := testStore.GetAccount(context.Background(), baseFromAccount.ID)
 	require.NoError(t, err)
 
-	updatedToAccount, err := store.GetAccount(context.Background(), baseToAccount.ID)
+	updatedToAccount, err := testStore.GetAccount(context.Background(), baseToAccount.ID)
 	require.NoError(t, err)
 
 	require.Equal(t, baseFromAccount.Balance-int64(n)*amount, updatedFromAccount.Balance)
@@ -95,8 +93,6 @@ func TestTransferTx(t *testing.T) {
 }
 
 func TestTransferTxDeadlock(t *testing.T) {
-	store := NewStore(testDb)
-
 	account1, _ := createRandomAccount()
 	account2, _ := createRandomAccount()
 
@@ -115,7 +111,7 @@ func TestTransferTxDeadlock(t *testing.T) {
 		}
 
 		go func() {
-			_, err := store.TransferTx(context.Background(), TransferTXParams{
+			_, err := testStore.TransferTx(context.Background(), TransferTXParams{
 				FromAccountID: fromAccountId,
 				ToAccountID:   toAccountId,
 				Amount:        amount,
@@ -130,10 +126,10 @@ func TestTransferTxDeadlock(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	updatedAccount1, err := store.GetAccount(context.Background(), account1.ID)
+	updatedAccount1, err := testStore.GetAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
 
-	updatedAccount2, err := store.GetAccount(context.Background(), account2.ID)
+	updatedAccount2, err := testStore.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
 	require.Equal(t, account1.Balance, updatedAccount1.Balance)

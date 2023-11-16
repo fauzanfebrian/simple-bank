@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
@@ -22,7 +21,7 @@ func createRandomAccount() (Account, error) {
 		Currency: util.RandomCurrency(),
 	}
 
-	return testQueries.CreateAccount(context.Background(), arg)
+	return testStore.CreateAccount(context.Background(), arg)
 
 }
 
@@ -42,7 +41,7 @@ func TestCreateAccount(t *testing.T) {
 
 func TestGetAccount(t *testing.T) {
 	account, _ := createRandomAccount()
-	resAccount, err := testQueries.GetAccount(context.Background(), account.ID)
+	resAccount, err := testStore.GetAccount(context.Background(), account.ID)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, resAccount)
@@ -62,7 +61,7 @@ func TestUpdateAccount(t *testing.T) {
 		Balance: account.Balance,
 	}
 
-	accountUpdated, err := testQueries.UpdateAccount(context.Background(), arg)
+	accountUpdated, err := testStore.UpdateAccount(context.Background(), arg)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, accountUpdated)
@@ -76,12 +75,12 @@ func TestUpdateAccount(t *testing.T) {
 
 func TestDeleteAccount(t *testing.T) {
 	account, _ := createRandomAccount()
-	err := testQueries.DeleteAccount(context.Background(), account.ID)
+	err := testStore.DeleteAccount(context.Background(), account.ID)
 	require.NoError(t, err)
 
-	resAccount, err := testQueries.GetAccount(context.Background(), account.ID)
+	resAccount, err := testStore.GetAccount(context.Background(), account.ID)
 	require.Error(t, err)
-	require.EqualError(t, err, sql.ErrNoRows.Error())
+	require.EqualError(t, err, ErrRecordNotFound.Error())
 	require.Empty(t, resAccount)
 }
 
@@ -94,7 +93,7 @@ func TestListAccounts(t *testing.T) {
 		Owner:  account.Owner,
 	}
 
-	accounts, err := testQueries.ListAccounts(context.Background(), arg)
+	accounts, err := testStore.ListAccounts(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, accounts, 1)
 

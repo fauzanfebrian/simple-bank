@@ -1186,6 +1186,59 @@ func (_c *MockStore_UpdateVerifyEmail_Call) RunAndReturn(run func(context.Contex
 	return _c
 }
 
+// VerifyEmailTx provides a mock function with given fields: ctx, arg
+func (_m *MockStore) VerifyEmailTx(ctx context.Context, arg db.VerifyEmailTXParams) (db.VerifyEmailTxResult, error) {
+	ret := _m.Called(ctx, arg)
+
+	var r0 db.VerifyEmailTxResult
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, db.VerifyEmailTXParams) (db.VerifyEmailTxResult, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, db.VerifyEmailTXParams) db.VerifyEmailTxResult); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		r0 = ret.Get(0).(db.VerifyEmailTxResult)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, db.VerifyEmailTXParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockStore_VerifyEmailTx_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'VerifyEmailTx'
+type MockStore_VerifyEmailTx_Call struct {
+	*mock.Call
+}
+
+// VerifyEmailTx is a helper method to define mock.On call
+//   - ctx context.Context
+//   - arg db.VerifyEmailTXParams
+func (_e *MockStore_Expecter) VerifyEmailTx(ctx interface{}, arg interface{}) *MockStore_VerifyEmailTx_Call {
+	return &MockStore_VerifyEmailTx_Call{Call: _e.mock.On("VerifyEmailTx", ctx, arg)}
+}
+
+func (_c *MockStore_VerifyEmailTx_Call) Run(run func(ctx context.Context, arg db.VerifyEmailTXParams)) *MockStore_VerifyEmailTx_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(db.VerifyEmailTXParams))
+	})
+	return _c
+}
+
+func (_c *MockStore_VerifyEmailTx_Call) Return(_a0 db.VerifyEmailTxResult, _a1 error) *MockStore_VerifyEmailTx_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockStore_VerifyEmailTx_Call) RunAndReturn(run func(context.Context, db.VerifyEmailTXParams) (db.VerifyEmailTxResult, error)) *MockStore_VerifyEmailTx_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockStore creates a new instance of MockStore. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockStore(t interface {
