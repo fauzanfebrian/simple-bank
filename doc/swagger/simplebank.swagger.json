@@ -170,6 +170,9 @@
         },
         "password": {
           "type": "string"
+        },
+        "role": {
+          "type": "string"
         }
       }
     },

@@ -15,6 +15,7 @@ type createUserRequest struct {
 	Username string `json:"username" binding:"required,alphanum"`
 	Password string `json:"password" binding:"required,min=6"`
 	FullName string `json:"full_name" binding:"required"`
+	Role     string `json:"role" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
 }
 
@@ -56,7 +57,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 		Username:       req.Username,
 		FullName:       req.FullName,
 		Email:          req.Email,
-		HashedPassword: hashedPassword,
+		HashedPassword: hashedPassword, Role: req.Role,
 	}
 	user, err := server.store.CreateUser(ctx, arg)
 	if err != nil {
@@ -112,7 +113,8 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	}
 
 	token, accessPayload, err := server.tokenMaker.CreateToken(
-		req.Username,
+		user.Username,
+		user.Role,
 		server.config.AccessTokenDuration,
 	)
 	if err != nil {
@@ -121,7 +123,8 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	}
 
 	refreshToken, refreshPayload, err := server.tokenMaker.CreateToken(
-		req.Username,
+		user.Username,
+		user.Role,
 		server.config.RefreshTokenDuration,
 	)
 	if err != nil {

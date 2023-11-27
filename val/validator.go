@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/mail"
 	"regexp"
+
+	"github.com/fauzanfebrian/simplebank/util"
 )
 
 var (
@@ -25,6 +27,16 @@ func ValidateUsername(value string) error {
 	}
 	if !isValidUsername(value) {
 		return fmt.Errorf("must containe only aphanumeric")
+	}
+	return nil
+}
+
+func ValidateRole(value string) error {
+	if err := ValidataString(value, 3, 100); err != nil {
+		return err
+	}
+	if value != util.BankerRole && value != util.DepositorRole {
+		return fmt.Errorf("incorrect value")
 	}
 	return nil
 }

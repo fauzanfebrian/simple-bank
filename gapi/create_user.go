@@ -31,6 +31,7 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 			FullName:       req.GetFullName(),
 			Email:          req.GetEmail(),
 			HashedPassword: hashedPassword,
+			Role:           req.GetRole(),
 		},
 		AfterCreate: func(user db.User) error {
 			return server.sendVerifyEmail(ctx, user)
@@ -70,6 +71,10 @@ func (server *Server) sendVerifyEmail(ctx context.Context, user db.User) error {
 func validateCreateUserRequest(req *pb.CreateUserRequest) (violations []*errdetails.BadRequest_FieldViolation) {
 	if err := val.ValidateUsername(req.GetUsername()); err != nil {
 		violations = append(violations, fieldViolation("username", err))
+	}
+
+	if err := val.ValidateRole(req.GetRole()); err != nil {
+		violations = append(violations, fieldViolation("role", err))
 	}
 
 	if err := val.ValidatePassword(req.GetPassword()); err != nil {

@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-	type renewAccessTokenRequest struct {
+type renewAccessTokenRequest struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
@@ -69,6 +69,7 @@ func (server *Server) renewAccessToken(ctx *gin.Context) {
 
 	token, accessPayload, err := server.tokenMaker.CreateToken(
 		session.Username,
+		refreshPayload.Role,
 		server.config.AccessTokenDuration,
 	)
 	if err != nil {
